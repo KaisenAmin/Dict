@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "*.tru": "turing",
-        "dict.h": "c"
-    }
-}
