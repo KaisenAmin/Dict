@@ -21,6 +21,7 @@ typedef struct Dict
     unsigned int (*hash)(const char* key);
     void (*insert)(struct Dict* self, const char* key, const char* value);
     char* (*get)(struct Dict* self, const char* key);
+    void (*removeKey)(struct Dict* self, const char* key);
     
 } Dict;
 

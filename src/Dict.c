@@ -34,6 +34,24 @@ char* get(Dict* table, const char* key)
     return pair ? pair->value : NULL;
 }
 
+void removeKey(Dict* table, const char* key) 
+{
+    unsigned int idx = table->hash(key);
+    KeyValue** pair = &(table->buckets[idx]);
+
+    while (*pair && stringCompare(key, (*pair)->key) == 0) 
+        pair = &((*pair)->next);
+
+    if (*pair) 
+    {
+        KeyValue* temp = *pair;
+        *pair = (*pair)->next;
+        free(temp->key);
+        free(temp->value);
+        free(temp);
+    }
+}
+
 Dict createDict() 
 {
     Dict table;
@@ -41,6 +59,7 @@ Dict createDict()
     table.hash = hash;
     table.insert = insert;
     table.get = get;
+    table.removeKey = removeKey;
     
     return table;
 }

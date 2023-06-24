@@ -10,6 +10,10 @@ This is a simple dictionary library implemented in C. The library provides a bas
 - Simple hash function.
 - Object-oriented like approach using structs and function pointers.
 
+* **Insert:** Adds a new key-value pair to the dictionary.
+* **Get:** Retrieves a value from the dictionary using the associated key.
+* **RemoveKey:** Deletes a key-value pair from the dictionary.
+
 ### Building
 
 1. Clone the repository:

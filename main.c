@@ -12,4 +12,11 @@ int main(int argc, char **argv)
 
     if (value) 
         printf("%s\n", value);
+    
+    table.removeKey(&table, "key1");
+
+    printf("Key1 value is %s\n", table.get(&table, "key1"));
+
+    getchar();
+    return 0;  
 }
