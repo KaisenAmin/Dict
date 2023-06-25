@@ -2,6 +2,8 @@
 
 This is a simple dictionary library implemented in C. The library provides a basic hash table implementation similar to Python dictionaries.
 
+This library provides a lot of flexibility to manage key-value pairs, including the ability to dynamically insert and retrieve data, as well as basic collision handling and a load factor for performance insights.
+
 ## Features
 
 - Insert key-value pairs into the dictionary.
@@ -53,6 +55,11 @@ This is a simple dictionary library implemented in C. The library provides a bas
 ## Usage
 
 Include the `Dict.h` header in your C source file.
+
+
+## Note 
+
+* **Note:** This library does not provide automatic memory management for added items. It is the responsibility of the user to manage the memory for the added key-value pairs. For example, if you add a string as a value, make sure you free the memory for that string when you no longer need it. This is particularly important when using the clear function, as it will not free the memory of the values in the dictionary.
 
 
 ### Examples 
