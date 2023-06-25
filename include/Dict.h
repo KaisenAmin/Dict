@@ -24,6 +24,7 @@ typedef struct DictItem
 typedef struct Dict 
 {
     KeyValue* buckets[TABLE_SIZE];
+
     unsigned int (*hash)(const char* key);
     void (*insert)(struct Dict* self, const char* key, const char* value);
     char* (*get)(struct Dict* self, const char* key);
@@ -36,6 +37,8 @@ typedef struct Dict
     char** (*values)(struct Dict* self);
     DictItem* (*items)(struct Dict* self);
     double (*loadFactor)(struct Dict* self);
+    char* (*pop)(struct Dict* self, const char* key, const char* defaultVal);
+
     int size_field;
     
 } Dict;

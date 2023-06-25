@@ -84,7 +84,7 @@ void update(Dict* table, const char* key, const char* value)
     }
     // If key does not exist, insert new key-value pair
     table->insert(table, key, value);
-    table->size_field++;
+
 }
 
 void clear(Dict* table) 
@@ -176,6 +176,20 @@ double loadFactor(Dict* table)
     return (double)size / TABLE_SIZE;
 }
 
+char* pop(Dict* self, const char* key, const char* default_value) 
+{
+    char* value = get(self, key);
+    if (value) 
+    {
+        removeKey(self, key);
+        return value;
+    } 
+    else 
+    {
+        return (char*)default_value;
+    }
+}
+
 Dict createDict() 
 {
     Dict table;
@@ -192,7 +206,8 @@ Dict createDict()
     table.values = values;
     table.items = items;
     table.loadFactor = loadFactor;
-    
+    table.pop = pop;
+ 
     return table;
 }
 
