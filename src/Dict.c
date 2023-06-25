@@ -1,57 +1,57 @@
 #include "../include/Dict.h"
 
-
-unsigned int hash(const char* key) 
+unsigned int hash(const char *key)
 {
     unsigned int hash = 0;
-    while (*key) hash = (hash << 5) - hash + *key++;
+    while (*key)
+        hash = (hash << 5) - hash + *key++;
     return hash % TABLE_SIZE;
 }
 
-KeyValue* pair(const char* key, const char* value) 
+KeyValue *pair(const char *key, const char *value)
 {
-    KeyValue* pair = malloc(sizeof(*pair));
+    KeyValue *pair = malloc(sizeof(*pair));
     pair->key = strdup(key);
     pair->value = strdup(value);
     pair->next = NULL;
     return pair;
 }
 
-char* get(Dict* table, const char* key) 
+char *get(Dict *table, const char *key)
 {
     unsigned int idx = table->hash(key);
-    KeyValue* pair = table->buckets[idx];
+    KeyValue *pair = table->buckets[idx];
 
-    while (pair && strcmp(key, pair->key) != 0) 
+    while (pair && strcmp(key, pair->key) != 0)
         pair = pair->next;
 
     return pair ? pair->value : NULL;
 }
 
-void insert(Dict* table, const char* key, const char* value) 
+void insert(Dict *table, const char *key, const char *value)
 {
     unsigned int idx = table->hash(key);
-    KeyValue* newpair = pair(key, value);
-    KeyValue** next = &(table->buckets[idx]);
+    KeyValue *newpair = pair(key, value);
+    KeyValue **next = &(table->buckets[idx]);
 
-    while (*next) 
+    while (*next)
         next = &((*next)->next);
 
     *next = newpair;
     table->size_field++;
 }
 
-void removeKey(Dict* table, const char* key) 
+void removeKey(Dict *table, const char *key)
 {
     unsigned int idx = table->hash(key);
-    KeyValue** pair = &(table->buckets[idx]);
+    KeyValue **pair = &(table->buckets[idx]);
 
-    while (*pair && stringCompare(key, (*pair)->key) == 0) 
+    while (*pair && stringCompare(key, (*pair)->key) == 0)
         pair = &((*pair)->next);
 
-    if (*pair) 
+    if (*pair)
     {
-        KeyValue* temp = *pair;
+        KeyValue *temp = *pair;
         *pair = (*pair)->next;
         free(temp->key);
         free(temp->value);
@@ -60,22 +60,24 @@ void removeKey(Dict* table, const char* key)
     }
 }
 
-int exists(Dict* table, const char* key) 
+int exists(Dict *table, const char *key)
 {
     return table->get(table, key) != NULL;
 }
 
-int size(Dict* table) 
+int size(Dict *table)
 {
     return table->size_field;
 }
 
-void update(Dict* table, const char* key, const char* value) 
+void update(Dict *table, const char *key, const char *value)
 {
     unsigned int idx = table->hash(key);
-    KeyValue* pair = table->buckets[idx];
-    while (pair) {
-        if (stringCompare(key, pair->key)) {
+    KeyValue *pair = table->buckets[idx];
+    while (pair)
+    {
+        if (stringCompare(key, pair->key))
+        {
             free(pair->value);
             pair->value = strdup(value);
             return;
@@ -84,18 +86,17 @@ void update(Dict* table, const char* key, const char* value)
     }
     // If key does not exist, insert new key-value pair
     table->insert(table, key, value);
-
 }
 
-void clear(Dict* table) 
+void clear(Dict *table)
 {
-    KeyValue* pair;
-    KeyValue* tmp;
+    KeyValue *pair;
+    KeyValue *tmp;
 
-    for (int i = 0; i < TABLE_SIZE; i++) 
+    for (int i = 0; i < TABLE_SIZE; i++)
     {
         pair = table->buckets[i];
-        while (pair) 
+        while (pair)
         {
             tmp = pair;
             pair = pair->next;
@@ -111,16 +112,16 @@ void clear(Dict* table)
     table->size_field = 0;
 }
 
-char** keys(Dict* table) 
+char **keys(Dict *table)
 {
     int size = table->size(table);
-    char** keysArray = malloc(sizeof(char*) * (size + 1)); // extra space for NULL terminator
+    char **keysArray = malloc(sizeof(char *) * (size + 1)); // extra space for NULL terminator
     int index = 0;
 
-    for (int i = 0; i < TABLE_SIZE; i++) 
+    for (int i = 0; i < TABLE_SIZE; i++)
     {
-        KeyValue* pair = table->buckets[i];
-        while (pair) 
+        KeyValue *pair = table->buckets[i];
+        while (pair)
         {
             keysArray[index++] = strdup(pair->key);
             pair = pair->next;
@@ -131,15 +132,15 @@ char** keys(Dict* table)
     return keysArray;
 }
 
-char** values(Dict* table) 
+char **values(Dict *table)
 {
     int size = table->size(table);
-    char** valuesArray = malloc(sizeof(char*) * (size + 1)); // extra space for NULL terminator
+    char **valuesArray = malloc(sizeof(char *) * (size + 1)); // extra space for NULL terminator
     int index = 0;
-    for (int i = 0; i < TABLE_SIZE; i++) 
+    for (int i = 0; i < TABLE_SIZE; i++)
     {
-        KeyValue* pair = table->buckets[i];
-        while (pair) 
+        KeyValue *pair = table->buckets[i];
+        while (pair)
         {
             valuesArray[index++] = strdup(pair->value);
             pair = pair->next;
@@ -149,15 +150,15 @@ char** values(Dict* table)
     return valuesArray;
 }
 
-DictItem* items(Dict* table) 
+DictItem *items(Dict *table)
 {
     int size = table->size(table);
-    DictItem* itemsArray = malloc(sizeof(DictItem) * (size + 1)); // extra space for NULL terminator
+    DictItem *itemsArray = malloc(sizeof(DictItem) * (size + 1)); // extra space for NULL terminator
     int index = 0;
-    for (int i = 0; i < TABLE_SIZE; i++) 
+    for (int i = 0; i < TABLE_SIZE; i++)
     {
-        KeyValue* pair = table->buckets[i];
-        while (pair) 
+        KeyValue *pair = table->buckets[i];
+        while (pair)
         {
             itemsArray[index].key = strdup(pair->key);
             itemsArray[index].value = strdup(pair->value);
@@ -165,35 +166,50 @@ DictItem* items(Dict* table)
             pair = pair->next;
         }
     }
-    itemsArray[index].key = NULL; // NULL terminator
+    itemsArray[index].key = NULL;   // NULL terminator
     itemsArray[index].value = NULL; // NULL terminator
     return itemsArray;
 }
 
-double loadFactor(Dict* table) 
+double loadFactor(Dict *table)
 {
     int size = table->size(table);
     return (double)size / TABLE_SIZE;
 }
 
-char* pop(Dict* self, const char* key, const char* default_value) 
+char *pop(Dict *self, const char *key, const char *default_value)
 {
-    char* value = get(self, key);
-    if (value) 
+    char *value = get(self, key);
+    if (value)
     {
         removeKey(self, key);
         return value;
-    } 
-    else 
+    }
+    else
     {
-        return (char*)default_value;
+        return (char *)default_value;
     }
 }
 
-Dict createDict() 
+void print(struct Dict *self)
+{
+    printf("Dictionary:\n");
+    for (int i = 0; i < TABLE_SIZE; i++)
+    {
+        KeyValue *pair = self->buckets[i];
+        while (pair)
+        {
+            printf("%s: %s\n", pair->key, pair->value);
+            pair = pair->next;
+        }
+    }
+}
+
+Dict createDict()
 {
     Dict table;
     memset(&table, 0, sizeof(table));
+
     table.hash = hash;
     table.insert = insert;
     table.get = get;
@@ -207,7 +223,8 @@ Dict createDict()
     table.items = items;
     table.loadFactor = loadFactor;
     table.pop = pop;
- 
+    table.size_field = 0;
+    table.print = print;
+
     return table;
 }
-

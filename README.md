@@ -22,6 +22,7 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **items:** this method that will return a list/array of all key/value pairs as DictItem.
 * **loadFactor:** The load factor is a concept used in hash tables to measure how full the table is. It's calculated by dividing the number of entries in the table by the number of buckets. A higher load factor means that the table is more filled, which could lead to longer search times.
 * **pop:** this method removes the specified item from the dictionary.
+* **print:** this method print key-value pair of dictionary.
 
 ### Building
 
@@ -251,4 +252,18 @@ Include the `Dict.h` header in your C source file.
     printf("Size of dictionary after pop: %d\n", myDict.size(&myDict));
     
     free(poppedValue);
+    ```
+
+9. "print" this function print dict with style:
+
+    ```c
+        // Create a new dictionary
+    Dict myDict = createDict();
+
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
+
+    myDict.print(&myDict);
     ```
