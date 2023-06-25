@@ -210,6 +210,29 @@ bool isEmpty(Dict* self)
     return self->size(self) == 0 ? 1 : 0;
 }
 
+DictItem *popItem(Dict *self, const char *key)
+{
+    unsigned int idx = self->hash(key);
+    KeyValue **pair = &(self->buckets[idx]);
+
+    while (*pair && strcmp(key, (*pair)->key) != 0)
+        pair = &((*pair)->next);
+
+    if (*pair)
+    {
+        KeyValue *temp = *pair;
+        DictItem *item = malloc(sizeof(*item));
+        item->key = strdup(temp->key);
+        item->value = strdup(temp->value);
+        *pair = (*pair)->next;
+        free(temp->key);
+        free(temp->value);
+        free(temp);
+        self->size_field--;
+        return item;
+    }
+    return NULL;
+}
 
 Dict createDict()
 {
@@ -232,6 +255,7 @@ Dict createDict()
     table.size_field = 0;
     table.print = print;
     table.isEmpty = isEmpty;
+    table.popItem = popItem;
 
     return table;
 }

@@ -24,6 +24,7 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **pop:** this method removes the specified item from the dictionary.
 * **print:** this method print key-value pair of dictionary.
 * **isEmpty:** this method check a dict is empty or not.
+* **popItem:** this method removes the item that was last inserted into the dictionary.
 
 
 ### Building
@@ -287,4 +288,32 @@ Include the `Dict.h` header in your C source file.
         printf("Dictionary is empty\n");
     else
         printf("Dictionary is not empty\n");
+    ```
+
+11. "popItem" like python:
+
+    ```c
+    Dict myDict = createDict();
+
+    myDict.insert(&myDict, "apple", "fruit");
+    myDict.insert(&myDict, "carrot", "vegetable");
+    myDict.insert(&myDict, "chicken", "meat");
+
+    myDict.print(&myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
+
+    DictItem *removedItem = myDict.popItem(&myDict, "carrot");
+    
+    if (removedItem)
+    {
+        printf("Removed key: %s, value: %s\n", removedItem->key, removedItem->value);
+        free(removedItem->key);
+        free(removedItem->value);
+        free(removedItem);
+    }
+    else
+    {
+        printf("Item not found in the dictionary.\n");
+    }
+
+    myDict.print(&myDict); // prints: apple: fruit, chicken: meat
     ```

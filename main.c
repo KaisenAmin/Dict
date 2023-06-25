@@ -1,23 +1,31 @@
 #include "./include/Dict.h"
+#include <stdio.h>
 
-
-int main(int argc, char **argv)
+int main()
 {
-    // Create a new dictionary
     Dict myDict = createDict();
 
-    // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict.insert(&myDict, "apple", "fruit");
+    myDict.insert(&myDict, "carrot", "vegetable");
+    myDict.insert(&myDict, "chicken", "meat");
 
-    myDict.print(&myDict);
+    myDict.print(&myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
 
-    if (myDict.isEmpty(&myDict))
-        printf("Dictionary is empty\n");
+    DictItem *removedItem = myDict.popItem(&myDict, "carrot");
+    
+    if (removedItem)
+    {
+        printf("Removed key: %s, value: %s\n", removedItem->key, removedItem->value);
+        free(removedItem->key);
+        free(removedItem->value);
+        free(removedItem);
+    }
     else
-        printf("Dictionary is not empty\n");
+    {
+        printf("Item not found in the dictionary.\n");
+    }
 
-    getchar();
-    return 0;  
+    myDict.print(&myDict); // prints: apple: fruit, chicken: meat
+
+    return 0;
 }

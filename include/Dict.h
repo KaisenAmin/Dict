@@ -41,10 +41,13 @@ typedef struct Dict
     char *(*pop)(struct Dict *self, const char *key, const char *defaultVal);
     void (*print)(struct Dict *self);
     bool (*isEmpty)(struct Dict *self);
+    DictItem *(*popItem)(struct Dict *self, const char *key);
 
     int size_field;
 
 } Dict;
+
+typedef struct DictItem* (*PopItemFunc)(struct Dict *self, const char *key);
 
 Dict createDict();
 
