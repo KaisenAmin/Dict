@@ -15,6 +15,12 @@ typedef struct KeyValue
     struct KeyValue* next;
 } KeyValue;
 
+typedef struct DictItem
+{
+    char* key;
+    char* value;
+} DictItem;
+
 typedef struct Dict 
 {
     KeyValue* buckets[TABLE_SIZE];
@@ -26,6 +32,9 @@ typedef struct Dict
     int (*exists)(struct Dict* self, const char* key);
     void (*update)(struct Dict* self, const char* key, const char* value);
     void (*clear)(struct Dict* self);
+    char** (*keys)(struct Dict* self);
+    char** (*values)(struct Dict* self);
+    DictItem* (*items)(struct Dict* self);
     int size_field;
     
 } Dict;

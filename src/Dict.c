@@ -84,6 +84,7 @@ void update(Dict* table, const char* key, const char* value)
     }
     // If key does not exist, insert new key-value pair
     table->insert(table, key, value);
+    table->size_field++;
 }
 
 void clear(Dict* table) 
@@ -110,6 +111,65 @@ void clear(Dict* table)
     table->size_field = 0;
 }
 
+char** keys(Dict* table) 
+{
+    int size = table->size(table);
+    char** keysArray = malloc(sizeof(char*) * (size + 1)); // extra space for NULL terminator
+    int index = 0;
+
+    for (int i = 0; i < TABLE_SIZE; i++) 
+    {
+        KeyValue* pair = table->buckets[i];
+        while (pair) 
+        {
+            keysArray[index++] = strdup(pair->key);
+            pair = pair->next;
+        }
+    }
+
+    keysArray[index] = NULL; // NULL terminator
+    return keysArray;
+}
+
+char** values(Dict* table) 
+{
+    int size = table->size(table);
+    char** valuesArray = malloc(sizeof(char*) * (size + 1)); // extra space for NULL terminator
+    int index = 0;
+    for (int i = 0; i < TABLE_SIZE; i++) 
+    {
+        KeyValue* pair = table->buckets[i];
+        while (pair) 
+        {
+            valuesArray[index++] = strdup(pair->value);
+            pair = pair->next;
+        }
+    }
+    valuesArray[index] = NULL; // NULL terminator
+    return valuesArray;
+}
+
+DictItem* items(Dict* table) 
+{
+    int size = table->size(table);
+    DictItem* itemsArray = malloc(sizeof(DictItem) * (size + 1)); // extra space for NULL terminator
+    int index = 0;
+    for (int i = 0; i < TABLE_SIZE; i++) 
+    {
+        KeyValue* pair = table->buckets[i];
+        while (pair) 
+        {
+            itemsArray[index].key = strdup(pair->key);
+            itemsArray[index].value = strdup(pair->value);
+            index++;
+            pair = pair->next;
+        }
+    }
+    itemsArray[index].key = NULL; // NULL terminator
+    itemsArray[index].value = NULL; // NULL terminator
+    return itemsArray;
+}
+
 Dict createDict() 
 {
     Dict table;
@@ -122,6 +182,9 @@ Dict createDict()
     table.exists = exists;
     table.update = update;
     table.clear = clear;
+    table.keys = keys;
+    table.values = values;
+    table.items = items;
     
     return table;
 }

@@ -11,34 +11,20 @@ int main(int argc, char **argv)
     myDict.insert(&myDict, "Key2", "Value2");
     myDict.insert(&myDict, "Key3", "Value3");
 
-    // Print current size
     printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
-    printf("Key1 exists : %d\n", myDict.exists(&myDict, "Key1")); // Outputs: 1
-    printf("Key2 exists : %d\n", myDict.exists(&myDict, "Key2")); // Outputs: 0
-    // Remove a key-value pair
-    myDict.removeKey(&myDict, "Key1");
+   
+    DictItem* itemsArray = myDict.items(&myDict);
 
-    printf("After Delete\n");
+    for (int i = 0; itemsArray[i].key; i++) 
+    {
+        printf("%s: %s\n", itemsArray[i].key, itemsArray[i].value);
+        
+        free(itemsArray[i].key);
+        free(itemsArray[i].value);
+    }
 
-    if (myDict.exists(&myDict, "Key1"))
-        printf("Key1 exists\n");
-    else
-        printf("Key1 does not exist\n");
-
-    // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict));
-
-    myDict.update(&myDict, "Key1", "NewValue1");
-
-    // Verify the update
-    printf("%s\n", myDict.get(&myDict, "Key1")); // Outputs: NewValue1
-
-    // Clear the dictionary
-    myDict.clear(&myDict);
-
-    // Verify the clear
-    printf("%d\n", myDict.size(&myDict)); // Outputs: 0
-
+    free(itemsArray);
+        
     getchar();
     return 0;  
 }

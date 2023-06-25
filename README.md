@@ -17,6 +17,10 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **Exists:** this method check a key exists or not.
 * **Update:** this method that will update the value associated with a given key.
 * **Clear:** this method that will remove all key/value pairs from the dictionary, effectively resetting it.
+* **Keys:** this method that will return a list/array of all keys in the dictionary.
+* **Values:** this method that will return a list/array of all values in the dictionary.
+* **Items:** this method that will return a list/array of all key/value pairs as DictItem.
+
 
 ### Building
 
@@ -153,4 +157,58 @@ Include the `Dict.h` header in your C source file.
 
     // Verify the clear
     printf("%d\n", myDict.size(&myDict)); // Outputs: 0
+    ```
+
+5. iterate over "keys" and "values":
+
+    ```c
+    // Create a new dictionary
+    Dict myDict = createDict();
+
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
+
+    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+   
+    char** keysArray = myDict.keys(&myDict);
+    char **valuesArray = myDict.values(&myDict);
+
+    for (int i = 0; keysArray[i]; i++) 
+    {
+        printf("%s : %s\n", keysArray[i], valuesArray[i]);
+
+        free(valuesArray[i]);
+        free(keysArray[i]); // don't forget to free the memory!
+    }
+
+    free(keysArray);
+    free(valuesArray);
+    ```
+
+6. get keys and values with items as DictItems like Python:
+
+    ```c 
+    // Create a new dictionary
+    Dict myDict = createDict();
+
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
+
+    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+   
+    DictItem* itemsArray = myDict.items(&myDict);
+
+    for (int i = 0; itemsArray[i].key; i++) 
+    {
+        printf("%s: %s\n", itemsArray[i].key, itemsArray[i].value);
+        
+        free(itemsArray[i].key);
+        free(itemsArray[i].value);
+    }
+
+    free(itemsArray);
     ```
