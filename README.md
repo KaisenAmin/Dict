@@ -27,7 +27,7 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **popItem:** this method removes the item that was last inserted into the dictionary.
 * **merge:** this method merge twi dict with eachOther.
 * **copy:** The "copy" method returns a copy of the specified dictionary.
-
+* **fromKeys:** The "fromkeys" method returns a dictionary with the specified keys and the specified value.
 
 ### Building
 
@@ -375,4 +375,22 @@ Include the `Dict.h` header in your C source file.
     
     free(dict);
     free(copyDict);
+    ```
+
+14. "fromKeys" method return dict with specefic keys and values:
+
+    ```c
+    Dict* dict = createDict();
+
+    const char *keys[] = {"One", "Two", "Three"};
+    const char *value = "Default Value";
+    
+    dict->fromKeys(dict, keys, value, 3);
+
+    // Print the dictionary
+    dict->print(dict);
+
+    // Clean up
+    dict->clear(dict);
+    free(dict);
     ```
