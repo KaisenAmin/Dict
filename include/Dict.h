@@ -42,6 +42,7 @@ typedef struct Dict
     void (*print)(struct Dict *self);
     bool (*isEmpty)(struct Dict *self);
     DictItem *(*popItem)(struct Dict *self, const char *key);
+    void (*merge)(struct Dict *self, struct Dict *other);
 
     int size_field;
 
@@ -49,6 +50,6 @@ typedef struct Dict
 
 typedef struct DictItem* (*PopItemFunc)(struct Dict *self, const char *key);
 
-Dict createDict();
+Dict* createDict();
 
 #endif

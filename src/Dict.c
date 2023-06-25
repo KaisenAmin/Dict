@@ -38,6 +38,7 @@ void insert(Dict *table, const char *key, const char *value)
         next = &((*next)->next);
 
     *next = newpair;
+
     table->size_field++;
 }
 
@@ -234,28 +235,46 @@ DictItem *popItem(Dict *self, const char *key)
     return NULL;
 }
 
-Dict createDict()
+void merge(Dict *self, Dict *other)
 {
-    Dict table;
-    memset(&table, 0, sizeof(table));
+    char **otherKeys = other->keys(other);
+    int i = 0;
 
-    table.hash = hash;
-    table.insert = insert;
-    table.get = get;
-    table.removeKey = removeKey;
-    table.size = size;
-    table.exists = exists;
-    table.update = update;
-    table.clear = clear;
-    table.keys = keys;
-    table.values = values;
-    table.items = items;
-    table.loadFactor = loadFactor;
-    table.pop = pop;
-    table.size_field = 0;
-    table.print = print;
-    table.isEmpty = isEmpty;
-    table.popItem = popItem;
+    while(otherKeys[i]) 
+    {
+        if(!self->exists(self, otherKeys[i])) 
+        {
+            char *value = other->get(other, otherKeys[i]);
+            self->insert(self, otherKeys[i], value);
+        }
+
+        i++;
+    }
+}
+
+Dict* createDict()
+{
+    Dict *table = malloc(sizeof(Dict));
+    memset(table, 0, sizeof(Dict));
+
+    table->hash = hash;
+    table->insert = insert;
+    table->get = get;
+    table->removeKey = removeKey;
+    table->size = size;
+    table->exists = exists;
+    table->update = update;
+    table->clear = clear;
+    table->keys = keys;
+    table->values = values;
+    table->items = items;
+    table->loadFactor = loadFactor;
+    table->pop = pop;
+    table->size_field = 0;
+    table->print = print;
+    table->isEmpty = isEmpty;
+    table->popItem = popItem;
+    table->merge = merge;
 
     return table;
 }

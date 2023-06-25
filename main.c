@@ -1,31 +1,32 @@
 #include "./include/Dict.h"
-#include <stdio.h>
 
-int main()
+int main(int argc, char **argv)
 {
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
+    Dict* anotherDict = createDict();
 
-    myDict.insert(&myDict, "apple", "fruit");
-    myDict.insert(&myDict, "carrot", "vegetable");
-    myDict.insert(&myDict, "chicken", "meat");
+    myDict->insert(myDict, "apple", "fruit");
+    myDict->insert(myDict, "carrot", "vegetable");
+    myDict->insert(myDict, "chicken", "meat");
 
-    myDict.print(&myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
+    anotherDict->insert(anotherDict, "car", "vehicle");
+    anotherDict->insert(anotherDict, "cat", "animal");
+    anotherDict->insert(anotherDict, "pineapple", "fruit");
 
-    DictItem *removedItem = myDict.popItem(&myDict, "carrot");
-    
-    if (removedItem)
-    {
-        printf("Removed key: %s, value: %s\n", removedItem->key, removedItem->value);
-        free(removedItem->key);
-        free(removedItem->value);
-        free(removedItem);
-    }
-    else
-    {
-        printf("Item not found in the dictionary.\n");
-    }
+    printf("Before merging:\n");
+    printf("MyDict:\n");
+    myDict->print(myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
+    printf("\nAnotherDict:\n");
+    anotherDict->print(anotherDict); // prints: car: vehicle, cat: animal, pineapple: fruit
 
-    myDict.print(&myDict); // prints: apple: fruit, chicken: meat
+    myDict->merge(myDict, anotherDict);
 
+    printf("\nAfter merging:\n");
+    printf("MyDict:\n");
+    myDict->print(myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat, car: vehicle, cat: animal, pineapple: fruit
+    printf("\nAnotherDict:\n");
+    anotherDict->print(anotherDict);
+
+    getchar();
     return 0;
 }

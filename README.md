@@ -25,7 +25,7 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **print:** this method print key-value pair of dictionary.
 * **isEmpty:** this method check a dict is empty or not.
 * **popItem:** this method removes the item that was last inserted into the dictionary.
-
+* **merge:** this method merge twi dict with eachOther.
 
 ### Building
 
@@ -60,17 +60,16 @@ Include the `Dict.h` header in your C source file.
     ```c
     #include "./include/Dict.h"
 
-
     int main(int argc, char **argv)
     {
-        Dict table = createDict();
+        Dict* table = createDict();
 
-        table.insert(&table, "key1", "value1");
-        table.insert(&table, "key2", "value2");
+        table->insert(table, "key1", "value1");
+        table->insert(table, "key2", "value2");
 
-        char* value = table.get(&table, "key1");
+        char *value = table->get(table, "key1");
 
-        if (value) 
+        if (value)
             printf("%s\n", value);
     }
     ```
@@ -79,106 +78,106 @@ Include the `Dict.h` header in your C source file.
 
     ```c
     // Create a new dictionary
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
     // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+    printf("Size of dictionary: %d\n", myDict->size(myDict)); // Outputs: Size of dictionary: 3
 
     // Remove a key-value pair
-    myDict.removeKey(&myDict, "Key1");
+    myDict->removeKey(myDict, "Key1");
 
     // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict));
+    printf("Size of dictionary: %d\n", myDict->size(myDict));
     ```
 
 3. "exists" test element exists or not:
 
     ```c
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
     // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
-    printf("Key1 exists : %d\n", myDict.exists(&myDict, "Key1")); // Outputs: 1
-    printf("Key2 exists : %d\n", myDict.exists(&myDict, "Key2")); // Outputs: 0
+    printf("Size of dictionary: %d\n", myDict->size(myDict)); // Outputs: Size of dictionary: 3
+    printf("Key1 exists : %d\n", myDict->exists(myDict, "Key1")); // Outputs: 1
+    printf("Key2 exists : %d\n", myDict->exists(myDict, "Key2")); // Outputs: 0
     // Remove a key-value pair
-    myDict.removeKey(&myDict, "Key1");
+    myDict->removeKey(myDict, "Key1");
 
     printf("After Delete\n");
 
-    if (myDict.exists(&myDict, "Key1"))
+    if (myDict->exists(myDict, "Key1"))
         printf("Key1 exists\n");
     else
         printf("Key1 does not exist\n");
 
     // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict));
+    printf("Size of dictionary: %d\n", myDict->size(myDict));
     ```
 
 4. "update" and "clear" method for updating dict or clear dictionary:
 
     ```c
         // Create a new dictionary
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
     // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
-    printf("Key1 exists : %d\n", myDict.exists(&myDict, "Key1")); // Outputs: 1
-    printf("Key2 exists : %d\n", myDict.exists(&myDict, "Key2")); // Outputs: 0
+    printf("Size of dictionary: %d\n", myDict->size(myDict)); // Outputs: Size of dictionary: 3
+    printf("Key1 exists : %d\n", myDict->exists(myDict, "Key1")); // Outputs: 1
+    printf("Key2 exists : %d\n", myDict->exists(myDict, "Key2")); // Outputs: 0
     // Remove a key-value pair
-    myDict.removeKey(&myDict, "Key1");
+    myDict->removeKey(myDict, "Key1");
 
     printf("After Delete\n");
 
-    if (myDict.exists(&myDict, "Key1"))
+    if (myDict->exists(myDict, "Key1"))
         printf("Key1 exists\n");
     else
         printf("Key1 does not exist\n");
 
     // Print current size
-    printf("Size of dictionary: %d\n", myDict.size(&myDict));
+    printf("Size of dictionary: %d\n", myDict->size(myDict));
 
-    myDict.update(&myDict, "Key1", "NewValue1");
+    myDict->update(myDict, "Key1", "NewValue1");
 
     // Verify the update
-    printf("%s\n", myDict.get(&myDict, "Key1")); // Outputs: NewValue1
+    printf("%s\n", myDict->get(myDict, "Key1")); // Outputs: NewValue1
 
     // Clear the dictionary
-    myDict.clear(&myDict);
+    myDict->clear(myDict);
 
     // Verify the clear
-    printf("%d\n", myDict.size(&myDict)); // Outputs: 0
+    printf("%d\n", myDict->size(myDict)); // Outputs: 0
     ```
 
 5. iterate over "keys" and "values":
 
     ```c
-    // Create a new dictionary
-    Dict myDict = createDict();
+        // Create a new dictionary
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
-    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+    printf("Size of dictionary: %d\n", myDict->size(myDict)); // Outputs: Size of dictionary: 3
    
-    char** keysArray = myDict.keys(&myDict);
-    char **valuesArray = myDict.values(&myDict);
+    char** keysArray = myDict->keys(myDict);
+    char **valuesArray = myDict->values(myDict);
 
     for (int i = 0; keysArray[i]; i++) 
     {
@@ -196,16 +195,16 @@ Include the `Dict.h` header in your C source file.
 
     ```c 
     // Create a new dictionary
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
-    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+    printf("Size of dictionary: %d\n", myDict->size(myDict)); // Outputs: Size of dictionary: 3
    
-    DictItem* itemsArray = myDict.items(&myDict);
+    DictItem* itemsArray = myDict->items(myDict);
 
     for (int i = 0; itemsArray[i].key; i++) 
     {
@@ -222,37 +221,37 @@ Include the `Dict.h` header in your C source file.
 
     ```c 
         // Create a new dictionary
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
-    printf("Load factor: %f\n", myDict.loadFactor(&myDict));
+    printf("Load factor: %f\n", myDict->loadFactor(myDict));
     ```
 
 8. "pop" remove a item with name of key:
 
     ```c
-    // Create a new dictionary
-    Dict myDict = createDict();
+        // Create a new dictionary
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
-    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+    printf("Size of dictionary: %d\n", myDict->size(myDict)); // Outputs: Size of dictionary: 3
    
-    char* poppedValue = myDict.pop(&myDict, "Key1", NULL);
+    char* poppedValue = myDict->pop(myDict, "Key1", NULL);
     
     if(poppedValue != NULL)
         printf("Popped value: %s\n", poppedValue);
     else 
         printf("Key not found.\n");
    
-    printf("Size of dictionary after pop: %d\n", myDict.size(&myDict));
+    printf("Size of dictionary after pop: %d\n", myDict->size(myDict));
     
     free(poppedValue);
     ```
@@ -261,30 +260,30 @@ Include the `Dict.h` header in your C source file.
 
     ```c
         // Create a new dictionary
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
-    myDict.print(&myDict);
+    myDict->print(myDict);
     ```
 
 10. "isEmpty" check method is empty or not:
 
     ```c
     // Create a new dictionary
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
     // Insert some key-value pairs
-    myDict.insert(&myDict, "Key1", "Value1");
-    myDict.insert(&myDict, "Key2", "Value2");
-    myDict.insert(&myDict, "Key3", "Value3");
+    myDict->insert(myDict, "Key1", "Value1");
+    myDict->insert(myDict, "Key2", "Value2");
+    myDict->insert(myDict, "Key3", "Value3");
 
-    myDict.print(&myDict);
+    myDict->print(myDict);
 
-    if (myDict.isEmpty(&myDict))
+    if (myDict->isEmpty(myDict))
         printf("Dictionary is empty\n");
     else
         printf("Dictionary is not empty\n");
@@ -293,15 +292,15 @@ Include the `Dict.h` header in your C source file.
 11. "popItem" like python:
 
     ```c
-    Dict myDict = createDict();
+    Dict* myDict = createDict();
 
-    myDict.insert(&myDict, "apple", "fruit");
-    myDict.insert(&myDict, "carrot", "vegetable");
-    myDict.insert(&myDict, "chicken", "meat");
+    myDict->insert(myDict, "apple", "fruit");
+    myDict->insert(myDict, "carrot", "vegetable");
+    myDict->insert(myDict, "chicken", "meat");
 
-    myDict.print(&myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
+    myDict->print(myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
 
-    DictItem *removedItem = myDict.popItem(&myDict, "carrot");
+    DictItem *removedItem = myDict->popItem(myDict, "carrot");
     
     if (removedItem)
     {
@@ -315,5 +314,34 @@ Include the `Dict.h` header in your C source file.
         printf("Item not found in the dictionary.\n");
     }
 
-    myDict.print(&myDict); // prints: apple: fruit, chicken: meat
+    myDict->print(myDict); // prints: apple: fruit, chicken: meat
+    ```
+
+12. "merge" merge two dict with eachother:
+
+    ```c 
+    Dict* myDict = createDict();
+    Dict* anotherDict = createDict();
+
+    myDict->insert(myDict, "apple", "fruit");
+    myDict->insert(myDict, "carrot", "vegetable");
+    myDict->insert(myDict, "chicken", "meat");
+
+    anotherDict->insert(anotherDict, "car", "vehicle");
+    anotherDict->insert(anotherDict, "cat", "animal");
+    anotherDict->insert(anotherDict, "pineapple", "fruit");
+
+    printf("Before merging:\n");
+    printf("MyDict:\n");
+    myDict->print(myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat
+    printf("\nAnotherDict:\n");
+    anotherDict->print(anotherDict); // prints: car: vehicle, cat: animal, pineapple: fruit
+
+    myDict->merge(myDict, anotherDict);
+
+    printf("\nAfter merging:\n");
+    printf("MyDict:\n");
+    myDict->print(myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat, car: vehicle, cat: animal, pineapple: fruit
+    printf("\nAnotherDict:\n");
+    anotherDict->print(anotherDict);
     ```
