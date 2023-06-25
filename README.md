@@ -26,6 +26,8 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **isEmpty:** this method check a dict is empty or not.
 * **popItem:** this method removes the item that was last inserted into the dictionary.
 * **merge:** this method merge twi dict with eachOther.
+* **copy:** The "copy" method returns a copy of the specified dictionary.
+
 
 ### Building
 
@@ -344,4 +346,33 @@ Include the `Dict.h` header in your C source file.
     myDict->print(myDict); // prints: apple: fruit, carrot: vegetable, chicken: meat, car: vehicle, cat: animal, pineapple: fruit
     printf("\nAnotherDict:\n");
     anotherDict->print(anotherDict);
+    ```
+
+13. "copy" create two object for returing copy of one to other one:
+
+    ```c
+    // Create new dictionary
+    Dict* dict = createDict();
+
+    // Insert key-value pairs
+    dict->insert(dict, "One", "1");
+    dict->insert(dict, "Two", "2");
+    dict->insert(dict, "Three", "3");
+
+    // Print the original dictionary
+    dict->print(dict);
+
+    // Create a copy of the dictionary
+    Dict* copyDict = createDict();
+    copyDict->copy(copyDict, dict);
+
+    // Print the copied dictionary
+    copyDict->print(copyDict);
+
+    // Clean up
+    dict->clear(dict);
+    copyDict->clear(copyDict);
+    
+    free(dict);
+    free(copyDict);
     ```

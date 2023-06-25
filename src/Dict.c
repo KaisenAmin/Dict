@@ -252,6 +252,22 @@ void merge(Dict *self, Dict *other)
     }
 }
 
+void copy(Dict *self, Dict *source)
+{
+    // Clear the current dictionary first
+    self->clear(self);
+
+    for (int i = 0; i < TABLE_SIZE; i++)
+    {
+        KeyValue *pair = source->buckets[i];
+        while (pair)
+        {
+            self->insert(self, pair->key, pair->value);
+            pair = pair->next;
+        }
+    }
+}
+
 Dict* createDict()
 {
     Dict *table = malloc(sizeof(Dict));
@@ -275,6 +291,7 @@ Dict* createDict()
     table->isEmpty = isEmpty;
     table->popItem = popItem;
     table->merge = merge;
-
+    table->copy = copy;
+    
     return table;
 }
