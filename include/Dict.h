@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "String.h"
 
-#define TABLE_SIZE 100
+#define TABLE_SIZE 100000
 
 typedef struct KeyValue 
 {
@@ -24,6 +24,8 @@ typedef struct Dict
     void (*removeKey)(struct Dict* self, const char* key);
     int (*size)(struct Dict* self);
     int (*exists)(struct Dict* self, const char* key);
+    void (*update)(struct Dict* self, const char* key, const char* value);
+    void (*clear)(struct Dict* self);
     int size_field;
     
 } Dict;

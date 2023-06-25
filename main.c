@@ -28,6 +28,16 @@ int main(int argc, char **argv)
     // Print current size
     printf("Size of dictionary: %d\n", myDict.size(&myDict));
 
+    myDict.update(&myDict, "Key1", "NewValue1");
+
+    // Verify the update
+    printf("%s\n", myDict.get(&myDict, "Key1")); // Outputs: NewValue1
+
+    // Clear the dictionary
+    myDict.clear(&myDict);
+
+    // Verify the clear
+    printf("%d\n", myDict.size(&myDict)); // Outputs: 0
 
     getchar();
     return 0;  

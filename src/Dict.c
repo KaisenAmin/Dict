@@ -21,7 +21,10 @@ char* get(Dict* table, const char* key)
 {
     unsigned int idx = table->hash(key);
     KeyValue* pair = table->buckets[idx];
-    while (pair && strcmp(key, pair->key) != 0) pair = pair->next;
+
+    while (pair && strcmp(key, pair->key) != 0) 
+        pair = pair->next;
+
     return pair ? pair->value : NULL;
 }
 
@@ -30,7 +33,10 @@ void insert(Dict* table, const char* key, const char* value)
     unsigned int idx = table->hash(key);
     KeyValue* newpair = pair(key, value);
     KeyValue** next = &(table->buckets[idx]);
-    while (*next) next = &((*next)->next);
+
+    while (*next) 
+        next = &((*next)->next);
+
     *next = newpair;
     table->size_field++;
 }
@@ -64,6 +70,46 @@ int size(Dict* table)
     return table->size_field;
 }
 
+void update(Dict* table, const char* key, const char* value) 
+{
+    unsigned int idx = table->hash(key);
+    KeyValue* pair = table->buckets[idx];
+    while (pair) {
+        if (stringCompare(key, pair->key)) {
+            free(pair->value);
+            pair->value = strdup(value);
+            return;
+        }
+        pair = pair->next;
+    }
+    // If key does not exist, insert new key-value pair
+    table->insert(table, key, value);
+}
+
+void clear(Dict* table) 
+{
+    KeyValue* pair;
+    KeyValue* tmp;
+
+    for (int i = 0; i < TABLE_SIZE; i++) 
+    {
+        pair = table->buckets[i];
+        while (pair) 
+        {
+            tmp = pair;
+            pair = pair->next;
+            free(tmp->key);
+            free(tmp->value);
+            free(tmp);
+        }
+
+        table->buckets[i] = NULL;
+    }
+
+    // Reset size
+    table->size_field = 0;
+}
+
 Dict createDict() 
 {
     Dict table;
@@ -74,6 +120,8 @@ Dict createDict()
     table.removeKey = removeKey;
     table.size = size;
     table.exists = exists;
+    table.update = update;
+    table.clear = clear;
     
     return table;
 }
