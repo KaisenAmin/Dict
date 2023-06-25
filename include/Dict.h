@@ -35,6 +35,7 @@ typedef struct Dict
     char** (*keys)(struct Dict* self);
     char** (*values)(struct Dict* self);
     DictItem* (*items)(struct Dict* self);
+    double (*loadFactor)(struct Dict* self);
     int size_field;
     
 } Dict;

@@ -10,17 +10,17 @@ This is a simple dictionary library implemented in C. The library provides a bas
 - Simple hash function.
 - Object-oriented like approach using structs and function pointers.
 
-* **Insert:** Adds a new key-value pair to the dictionary.
-* **Get:** Retrieves a value from the dictionary using the associated key.
-* **RemoveKey:** Deletes a key-value pair from the dictionary.
-* **Size:** this method that will return the current size of the dictionary.
-* **Exists:** this method check a key exists or not.
-* **Update:** this method that will update the value associated with a given key.
-* **Clear:** this method that will remove all key/value pairs from the dictionary, effectively resetting it.
-* **Keys:** this method that will return a list/array of all keys in the dictionary.
-* **Values:** this method that will return a list/array of all values in the dictionary.
-* **Items:** this method that will return a list/array of all key/value pairs as DictItem.
-
+* **insert:** Adds a new key-value pair to the dictionary.
+* **get:** Retrieves a value from the dictionary using the associated key.
+* **removeKey:** Deletes a key-value pair from the dictionary.
+* **size:** this method that will return the current size of the dictionary.
+* **exists:** this method check a key exists or not.
+* **update:** this method that will update the value associated with a given key.
+* **clear:** this method that will remove all key/value pairs from the dictionary, effectively resetting it.
+* **keys:** this method that will return a list/array of all keys in the dictionary.
+* **values:** this method that will return a list/array of all values in the dictionary.
+* **items:** this method that will return a list/array of all key/value pairs as DictItem.
+* **loadFactor:** The load factor is a concept used in hash tables to measure how full the table is. It's calculated by dividing the number of entries in the table by the number of buckets. A higher load factor means that the table is more filled, which could lead to longer search times.
 
 ### Building
 
@@ -211,4 +211,18 @@ Include the `Dict.h` header in your C source file.
     }
 
     free(itemsArray);
+    ```
+
+7. "loadFactor" measure how full the Dict is:
+
+    ```c 
+        // Create a new dictionary
+    Dict myDict = createDict();
+
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
+
+    printf("Load factor: %f\n", myDict.loadFactor(&myDict));
     ```

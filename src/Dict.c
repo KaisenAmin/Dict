@@ -170,6 +170,12 @@ DictItem* items(Dict* table)
     return itemsArray;
 }
 
+double loadFactor(Dict* table) 
+{
+    int size = table->size(table);
+    return (double)size / TABLE_SIZE;
+}
+
 Dict createDict() 
 {
     Dict table;
@@ -185,6 +191,7 @@ Dict createDict()
     table.keys = keys;
     table.values = values;
     table.items = items;
+    table.loadFactor = loadFactor;
     
     return table;
 }
