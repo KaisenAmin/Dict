@@ -54,6 +54,11 @@ void removeKey(Dict* table, const char* key)
     }
 }
 
+int exists(Dict* table, const char* key) 
+{
+    return table->get(table, key) != NULL;
+}
+
 int size(Dict* table) 
 {
     return table->size_field;
@@ -68,6 +73,7 @@ Dict createDict()
     table.get = get;
     table.removeKey = removeKey;
     table.size = size;
+    table.exists = exists;
     
     return table;
 }

@@ -23,6 +23,7 @@ typedef struct Dict
     char* (*get)(struct Dict* self, const char* key);
     void (*removeKey)(struct Dict* self, const char* key);
     int (*size)(struct Dict* self);
+    int (*exists)(struct Dict* self, const char* key);
     int size_field;
     
 } Dict;
