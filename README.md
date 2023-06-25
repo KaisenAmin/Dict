@@ -13,6 +13,7 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **Insert:** Adds a new key-value pair to the dictionary.
 * **Get:** Retrieves a value from the dictionary using the associated key.
 * **RemoveKey:** Deletes a key-value pair from the dictionary.
+* **Size:** this method that will return the current size of the dictionary.
 
 ### Building
 
@@ -60,4 +61,25 @@ Include the `Dict.h` header in your C source file.
         if (value) 
             printf("%s\n", value);
     }
+    ```
+
+2. use "removeKey" and "size":
+
+    ```c
+    // Create a new dictionary
+    Dict myDict = createDict();
+
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
+
+    // Print current size
+    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
+
+    // Remove a key-value pair
+    myDict.removeKey(&myDict, "Key1");
+
+    // Print current size
+    printf("Size of dictionary: %d\n", myDict.size(&myDict));
     ```

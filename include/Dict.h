@@ -22,6 +22,8 @@ typedef struct Dict
     void (*insert)(struct Dict* self, const char* key, const char* value);
     char* (*get)(struct Dict* self, const char* key);
     void (*removeKey)(struct Dict* self, const char* key);
+    int (*size)(struct Dict* self);
+    int size_field;
     
 } Dict;
 

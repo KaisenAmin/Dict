@@ -3,20 +3,24 @@
 
 int main(int argc, char **argv)
 {
-    Dict table = createDict();
+    // Create a new dictionary
+    Dict myDict = createDict();
 
-    table.insert(&table, "key1", "value1");
-    table.insert(&table, "key2", "value2");
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
 
-    char* value = table.get(&table, "key1");
+    // Print current size
+    printf("Size of dictionary: %d\n", myDict.size(&myDict)); // Outputs: Size of dictionary: 3
 
-    if (value) 
-        printf("%s\n", value);
+    // Remove a key-value pair
+    myDict.removeKey(&myDict, "Key1");
+
+    // Print current size
+    printf("Size of dictionary: %d\n", myDict.size(&myDict));
+
     
-    table.removeKey(&table, "key1");
-
-    printf("Key1 value is %s\n", table.get(&table, "key1"));
-
     getchar();
     return 0;  
 }

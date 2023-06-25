@@ -17,6 +17,14 @@ KeyValue* pair(const char* key, const char* value)
     return pair;
 }
 
+char* get(Dict* table, const char* key) 
+{
+    unsigned int idx = table->hash(key);
+    KeyValue* pair = table->buckets[idx];
+    while (pair && strcmp(key, pair->key) != 0) pair = pair->next;
+    return pair ? pair->value : NULL;
+}
+
 void insert(Dict* table, const char* key, const char* value) 
 {
     unsigned int idx = table->hash(key);
@@ -24,14 +32,7 @@ void insert(Dict* table, const char* key, const char* value)
     KeyValue** next = &(table->buckets[idx]);
     while (*next) next = &((*next)->next);
     *next = newpair;
-}
-
-char* get(Dict* table, const char* key) 
-{
-    unsigned int idx = table->hash(key);
-    KeyValue* pair = table->buckets[idx];
-    while (pair && strcmp(key, pair->key) != 0) pair = pair->next;
-    return pair ? pair->value : NULL;
+    table->size_field++;
 }
 
 void removeKey(Dict* table, const char* key) 
@@ -49,7 +50,13 @@ void removeKey(Dict* table, const char* key)
         free(temp->key);
         free(temp->value);
         free(temp);
+        table->size_field--;
     }
+}
+
+int size(Dict* table) 
+{
+    return table->size_field;
 }
 
 Dict createDict() 
@@ -60,6 +67,8 @@ Dict createDict()
     table.insert = insert;
     table.get = get;
     table.removeKey = removeKey;
+    table.size = size;
     
     return table;
 }
+
