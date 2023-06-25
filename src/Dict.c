@@ -205,6 +205,12 @@ void print(struct Dict *self)
     }
 }
 
+bool isEmpty(Dict* self)
+{
+    return self->size(self) == 0 ? 1 : 0;
+}
+
+
 Dict createDict()
 {
     Dict table;
@@ -225,6 +231,7 @@ Dict createDict()
     table.pop = pop;
     table.size_field = 0;
     table.print = print;
+    table.isEmpty = isEmpty;
 
     return table;
 }

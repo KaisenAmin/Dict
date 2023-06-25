@@ -23,6 +23,8 @@ This is a simple dictionary library implemented in C. The library provides a bas
 * **loadFactor:** The load factor is a concept used in hash tables to measure how full the table is. It's calculated by dividing the number of entries in the table by the number of buckets. A higher load factor means that the table is more filled, which could lead to longer search times.
 * **pop:** this method removes the specified item from the dictionary.
 * **print:** this method print key-value pair of dictionary.
+* **isEmpty:** this method check a dict is empty or not.
+
 
 ### Building
 
@@ -266,4 +268,23 @@ Include the `Dict.h` header in your C source file.
     myDict.insert(&myDict, "Key3", "Value3");
 
     myDict.print(&myDict);
+    ```
+
+10. "isEmpty" check method is empty or not:
+
+    ```c
+    // Create a new dictionary
+    Dict myDict = createDict();
+
+    // Insert some key-value pairs
+    myDict.insert(&myDict, "Key1", "Value1");
+    myDict.insert(&myDict, "Key2", "Value2");
+    myDict.insert(&myDict, "Key3", "Value3");
+
+    myDict.print(&myDict);
+
+    if (myDict.isEmpty(&myDict))
+        printf("Dictionary is empty\n");
+    else
+        printf("Dictionary is not empty\n");
     ```

@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
 #include "String.h"
 
 #define TABLE_SIZE 100000
@@ -38,6 +40,7 @@ typedef struct Dict
     double (*loadFactor)(struct Dict *self);
     char *(*pop)(struct Dict *self, const char *key, const char *defaultVal);
     void (*print)(struct Dict *self);
+    bool (*isEmpty)(struct Dict *self);
 
     int size_field;
 

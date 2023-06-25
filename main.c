@@ -12,7 +12,12 @@ int main(int argc, char **argv)
     myDict.insert(&myDict, "Key3", "Value3");
 
     myDict.print(&myDict);
-    
+
+    if (myDict.isEmpty(&myDict))
+        printf("Dictionary is empty\n");
+    else
+        printf("Dictionary is not empty\n");
+
     getchar();
     return 0;  
 }
