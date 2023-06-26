@@ -58,7 +58,7 @@ char *get_dict(Dict *table, const char *key)
 void insert_dict(Dict *table, const char *key, const char *value)
 {
     unsigned int idx = table->hash_dict(key);
-    KeyValue *newpair = pair(key, value);
+    KeyValue *newpair = pair_dict(key, value);
     KeyValue **next = &(table->buckets_dict[idx]);
 
     while (*next)
@@ -270,10 +270,10 @@ double loadFactor_dict(Dict *table)
  */
 char *pop_dict(Dict *self, const char *key, const char *default_value)
 {
-    char *value = get(self, key);
+    char *value = get_dict(self, key);
     if (value)
     {
-        removeKey(self, key);
+        removeKey_dict(self, key);
         return value;
     }
     else
@@ -289,7 +289,6 @@ char *pop_dict(Dict *self, const char *key, const char *default_value)
  */
 void print_dict(struct Dict *self)
 {
-    printf("Dictionary:\n");
     for (int i = 0; i < TABLE_SIZE; i++)
     {
         KeyValue *pair = self->buckets_dict[i];
