@@ -56,30 +56,30 @@ typedef struct DictItem
  */
 typedef struct Dict
 {
-    KeyValue *buckets[TABLE_SIZE]; /**< Array of pointers to key-value pairs, serving as the dictionary's buckets */
+    KeyValue *buckets_dict[TABLE_SIZE]; /**< Array of pointers to key-value pairs, serving as the dictionary's buckets */
 
     /* Function pointers for various dictionary operations */
-    unsigned int (*hash)(const char *key);
-    void (*insert)(struct Dict *self, const char *key, const char *value);
-    char *(*get)(struct Dict *self, const char *key);
-    void (*removeKey)(struct Dict *self, const char *key);
-    int (*size)(struct Dict *self);
-    int (*exists)(struct Dict *self, const char *key);
-    void (*update)(struct Dict *self, const char *key, const char *value);
-    void (*clear)(struct Dict *self);
-    char **(*keys)(struct Dict *self);
-    char **(*values)(struct Dict *self);
-    DictItem *(*items)(struct Dict *self);
-    double (*loadFactor)(struct Dict *self);
-    char *(*pop)(struct Dict *self, const char *key, const char *defaultVal);
-    void (*print)(struct Dict *self);
-    bool (*isEmpty)(struct Dict *self);
-    DictItem *(*popItem)(struct Dict *self, const char *key);
-    void (*merge)(struct Dict *self, struct Dict *other);
-    void (*copy)(struct Dict *self, struct Dict *source);
-    void (*fromKeys)(struct Dict *self, const char **keys, const char *value, int numKeys);
+    unsigned int (*hash_dict)(const char *key);
+    void (*insert_dict)(struct Dict *self, const char *key, const char *value);
+    char *(*get_dict)(struct Dict *self, const char *key);
+    void (*removeKey_dict)(struct Dict *self, const char *key);
+    int (*size_dict)(struct Dict *self);
+    int (*exists_dict)(struct Dict *self, const char *key);
+    void (*update_dict)(struct Dict *self, const char *key, const char *value);
+    void (*clear_dict)(struct Dict *self);
+    char **(*keys_dict)(struct Dict *self);
+    char **(*values_dict)(struct Dict *self);
+    DictItem *(*items_dict)(struct Dict *self);
+    double (*loadFactor_dict)(struct Dict *self);
+    char *(*pop_dict)(struct Dict *self, const char *key, const char *defaultVal);
+    void (*print_dict)(struct Dict *self);
+    bool (*isEmpty_dict)(struct Dict *self);
+    DictItem *(*popItem_dict)(struct Dict *self, const char *key);
+    void (*merge_dict)(struct Dict *self, struct Dict *other);
+    void (*copy_dict)(struct Dict *self, struct Dict *source);
+    void (*fromKeys_dict)(struct Dict *self, const char **keys, const char *value, int numKeys);
     
-    int size_field;
+    int size_field_dict;
 
 } Dict;
 
