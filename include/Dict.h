@@ -1,3 +1,11 @@
+/**
+ * @file Dict.h
+ * @author Amin Tahmasebi
+ * @date 2023-06-26
+ * @brief File containing the KeyValue, DictItem and Dict structures, as well as the creation function for a Dict.
+ */
+
+
 #ifndef DICT_H_
 #define DICT_H_
 
@@ -8,17 +16,9 @@
 
 #define TABLE_SIZE 100000
 
-/**
- * @file Dict.h
- * @author Amin Tahmasebi
- * @date 2023-06-26
- * @brief File containing the KeyValue, DictItem and Dict structures, as well as the creation function for a Dict.
- */
 
 /**
  * @struct KeyValue
- * @author Amin Tahmasebi
- * @date 2023-06-26
  * @brief Structure for a key-value pair.
  *
  * This structure represents a key-value pair that will be stored in the dictionary.
@@ -83,16 +83,6 @@ typedef struct Dict
 
 } Dict;
 
-/**
- * @brief Function to create and initialize a new dictionary.
- *
- * This function creates a new dictionary and initializes all its members.
- *
- * @return A pointer to the newly created dictionary.
- *
- * @author Amin Tahmasebi
- * @date 2023-06-26
- */
 Dict* createDict();
 
 #endif
