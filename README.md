@@ -26,10 +26,11 @@ This library provides a lot of flexibility to manage key-value pairs, including 
 * **pop_dict:** this method removes the specified item from the dictionary.
 * **print_dict:** this method print key-value pair of dictionary.
 * **isEmpty_dict:** this method check a dict is empty or not.
-* **popItem_dict:** this method removes the item that was last inserted into the dictionary.
+* **popItem_dict:** this method removes the item with the given key and returns it; with a NULL key it removes the item that was last inserted.
 * **merge_dict:** this method merge twi dict with eachOther.
 * **copy_dict:** The "copy_dict" method returns a copy of the specified dictionary.
 * **fromKeys_dict:** The "fromkeys_dict" method returns a dictionary with the specified keys and the specified value.
+* **destroy_dict / destroyDict:** frees the dictionary and everything stored in it.
 
 ### Building
 
@@ -48,8 +49,15 @@ This library provides a lot of flexibility to manage key-value pairs, including 
 3. Compile the source code:
 
     ```sh
-    gcc -std=c11 -o main .\main.c .\src\String.c .\src\Dict.c
+    gcc -std=c11 -o main main.c src/Dict.c
     ./main
+    ```
+
+4. Or use make, and run the tests:
+
+    ```sh
+    make
+    make test
     ```
 
 ## Usage
@@ -59,7 +67,7 @@ Include the `Dict.h` header in your C source file.
 
 ## Note 
 
-* **Note:** This library does not provide automatic memory management for added items. It is the responsibility of the user to manage the memory for the added key-value pairs. For example, if you add a string as a value, make sure you free the memory for that string when you no longer need it. This is particularly important when using the clear function, as it will not free the memory of the values in the dictionary.
+* **Note:** The dictionary stores its own copies of keys and values, so the strings you pass can be freed or reused right after the call. Inserting an existing key replaces its value, and keys, values, items and print follow insertion order. Strings returned by `keys_dict`, `values_dict`, `items_dict`, `pop_dict` and `popItem_dict` belong to the caller and must be freed. Call `destroyDict` when the dictionary is no longer needed.
 
 
 ### Examples 
@@ -346,7 +354,7 @@ Include the `Dict.h` header in your C source file.
     printf("\nAnotherDict:\n");
     anotherDict->print_dict(anotherDict); // prints: car: vehicle, cat: animal, pineapple: fruit
 
-    myDict->merge(myDict, anotherDict);
+    myDict->merge_dict(myDict, anotherDict);
 
     printf("\nAfter merging:\n");
     printf("MyDict:\n");
@@ -377,11 +385,8 @@ Include the `Dict.h` header in your C source file.
     copyDict->print_dict(copyDict);
 
     // Clean up
-    dict->clear_dict(dict);
-    copyDict->clear_dict(copyDict);
-    
-    free(dict);
-    free(copyDict);
+    destroyDict(dict);
+    destroyDict(copyDict);
     ```
 
 14. "fromKeys" method return dict with specefic keys and values:
@@ -398,6 +403,5 @@ Include the `Dict.h` header in your C source file.
     dict->print_dict(dict);
 
     // Clean up
-    dict->clear_dict(dict);
-    free(dict);
+    destroyDict(dict);
     ```

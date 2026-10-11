@@ -1,64 +1,34 @@
-/**
- * @file Dict.h
- * @author Amin Tahmasebi
- * @date 2023-06-26
- * @brief File containing the KeyValue, DictItem and Dict structures, as well as the creation function for a Dict.
- */
-
-
 #ifndef DICT_H_
 #define DICT_H_
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include "String.h"
 
-#define TABLE_SIZE 100000
-
-
-/**
- * @struct KeyValue
- * @brief Structure for a key-value pair.
- *
- * This structure represents a key-value pair that will be stored in the dictionary.
- * It also contains a pointer to the next KeyValue pair, forming a linked list.
- */
 typedef struct KeyValue
 {
-    char *key; /**< The key of the pair */
-    char *value; /**< The value associated with the key */
-    struct KeyValue *next; /**< Pointer to the next key-value pair */
+    char *key;
+    char *value;
+    struct KeyValue *next;
+    struct KeyValue *previousInOrder;
+    struct KeyValue *nextInOrder;
 } KeyValue;
 
-/**
- * @struct DictItem
- * @author Amin Tahmasebi
- * @date 2023-06-26
- * @brief Structure for a dictionary item.
- *
- * This structure represents an item that can be stored in a dictionary.
- */
 typedef struct DictItem
 {
-    char *key; /**< The key of the item */
-    char *value; /**< The value associated with the key */
+    char *key;
+    char *value;
 } DictItem;
 
-/**
- * @struct Dict
- * @author Amin Tahmasebi
- * @date 2023-06-26
- * @brief Structure for a dictionary.
- *
- * This structure represents a dictionary, containing function pointers for various operations,
- * as well as an array of KeyValue buckets for storing data.
- */
 typedef struct Dict
 {
-    KeyValue *buckets_dict[TABLE_SIZE]; /**< Array of pointers to key-value pairs, serving as the dictionary's buckets */
+    KeyValue **buckets_dict;
+    size_t capacity_dict;
+    KeyValue *first_dict;
+    KeyValue *last_dict;
+    int size_field_dict;
 
-    /* Function pointers for various dictionary operations */
     unsigned int (*hash_dict)(const char *key);
     void (*insert_dict)(struct Dict *self, const char *key, const char *value);
     char *(*get_dict)(struct Dict *self, const char *key);
@@ -78,11 +48,10 @@ typedef struct Dict
     void (*merge_dict)(struct Dict *self, struct Dict *other);
     void (*copy_dict)(struct Dict *self, struct Dict *source);
     void (*fromKeys_dict)(struct Dict *self, const char **keys, const char *value, int numKeys);
-    
-    int size_field_dict;
-
+    void (*destroy_dict)(struct Dict *self);
 } Dict;
 
-Dict* createDict();
+Dict *createDict(void);
+void destroyDict(Dict *dict);
 
 #endif

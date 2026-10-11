@@ -1,2 +1,5 @@
-*.vscode
 *.exe
+*.o
+.vscode/
+main
+tests/test_dict

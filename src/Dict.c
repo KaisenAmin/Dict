@@ -1,438 +1,416 @@
 #include "../include/Dict.h"
 
-/**
- * @brief Compute the hash of a key
- * 
- * @param key Key for which to compute the hash
- * @return unsigned int Computed hash of the key
- */
-unsigned int hash_dict(const char *key)
+#include <string.h>
+
+#define INITIAL_CAPACITY 16
+
+static char *duplicate(const char *text)
 {
-    unsigned int hash = 0;
-    while (*key)
-        hash = (hash << 5) - hash + *key++;
-    return hash % TABLE_SIZE;
-}
-
-/**
- * @brief Create a new key-value pair
- * 
- * @param key Key for the new pair
- * @param value Value for the new pair
- * @return KeyValue* Pointer to the new key-value pair
- */
-KeyValue *pair_dict(const char *key, const char *value)
-{
-    KeyValue *pair = malloc(sizeof(*pair));
-    pair->key = strdup(key);
-    pair->value = strdup(value);
-    pair->next = NULL;
-    return pair;
-}
-
-/**
- * @brief Retrieve a value associated with a given key from the dictionary
- * 
- * @param table Pointer to the dictionary from which to retrieve the value
- * @param key Key for which to retrieve the value
- * @return char* Value associated with the given key, or NULL if the key does not exist
- */
-char *get_dict(Dict *table, const char *key)
-{
-    unsigned int idx = table->hash_dict(key);
-    KeyValue *pair = table->buckets_dict[idx];
-
-    while (pair && strcmp(key, pair->key) != 0)
-        pair = pair->next;
-
-    return pair ? pair->value : NULL;
-}
-
-/**
- * @brief Insert a new key-value pair into the dictionary
- * 
- * @param table Pointer to the dictionary into which to insert the pair
- * @param key Key for the new pair
- * @param value Value for the new pair
- */
-void insert_dict(Dict *table, const char *key, const char *value)
-{
-    unsigned int idx = table->hash_dict(key);
-    KeyValue *newpair = pair_dict(key, value);
-    KeyValue **next = &(table->buckets_dict[idx]);
-
-    while (*next)
-        next = &((*next)->next);
-
-    *next = newpair;
-
-    table->size_field_dict++;
-}
-
-/**
- * @brief Remove a key-value pair from the dictionary
- * 
- * @param table Pointer to the dictionary from which to remove the pair
- * @param key Key for the pair to remove
- */
-void removeKey_dict(Dict *table, const char *key)
-{
-    unsigned int idx = table->hash_dict(key);
-    KeyValue **pair = &(table->buckets_dict[idx]);
-
-    while (*pair && stringCompare(key, (*pair)->key) == 0)
-        pair = &((*pair)->next);
-
-    if (*pair)
+    size_t size = strlen(text) + 1;
+    char *copy = malloc(size);
+    if (copy)
     {
-        KeyValue *temp = *pair;
-        *pair = (*pair)->next;
-        free(temp->key);
-        free(temp->value);
-        free(temp);
-        table->size_field_dict--;
+        memcpy(copy, text, size);
     }
+    return copy;
 }
 
-/**
- * @brief Check if a key exists in the dictionary
- * 
- * @param table Pointer to the dictionary in which to check for the key
- * @param key Key for which to check
- * @return int Boolean indicating whether the key exists (non-zero) or not (zero)
- */
-int exists_dict(Dict *table, const char *key)
+static unsigned int hash_dict(const char *key)
 {
-    return table->get_dict(table, key) != NULL;
-}
-
-/**
- * @brief Retrieve the number of key-value pairs in the dictionary
- * 
- * @param table Pointer to the dictionary for which to retrieve the size
- * @return int Number of key-value pairs in the dictionary
- */
-int size_dict(Dict *table)
-{
-    return table->size_field_dict;
-}
-
-/**
- * @brief Update the value associated with a given key in the dictionary, or insert a new key-value pair if the key does not exist
- * 
- * @param table Pointer to the dictionary in which to update or insert the pair
- * @param key Key for the pair to update or insert
- * @param value New value for the pair
- */
-void update_dict(Dict *table, const char *key, const char *value)
-{
-    unsigned int idx = table->hash_dict(key);
-    KeyValue *pair = table->buckets_dict[idx];
-    while (pair)
+    unsigned int hash = 2166136261u;
+    for (const unsigned char *c = (const unsigned char *)key; *c; c++)
     {
-        if (stringCompare(key, pair->key))
+        hash ^= *c;
+        hash *= 16777619u;
+    }
+    return hash;
+}
+
+static size_t bucketOf(const Dict *self, const char *key)
+{
+    return self->hash_dict(key) & (self->capacity_dict - 1);
+}
+
+static KeyValue *findEntry(const Dict *self, const char *key)
+{
+    if (!self || !key)
+    {
+        return NULL;
+    }
+    for (KeyValue *entry = self->buckets_dict[bucketOf(self, key)]; entry; entry = entry->next)
+    {
+        if (strcmp(entry->key, key) == 0)
         {
-            free(pair->value);
-            pair->value = strdup(value);
-            return;
+            return entry;
         }
-        pair = pair->next;
-    }
-    // If key does not exist, insert new key-value pair
-    table->insert_dict(table, key, value);
-}
-
-/**
- * @brief Clear all key-value pairs from the dictionary
- * 
- * @param table Pointer to the dictionary to clear
- */
-void clear_dict(Dict *table)
-{
-    KeyValue *pair;
-    KeyValue *tmp;
-
-    for (int i = 0; i < TABLE_SIZE; i++)
-    {
-        pair = table->buckets_dict[i];
-        while (pair)
-        {
-            tmp = pair;
-            pair = pair->next;
-            free(tmp->key);
-            free(tmp->value);
-            free(tmp);
-        }
-
-        table->buckets_dict[i] = NULL;
-    }
-
-    // Reset size
-    table->size_field_dict = 0;
-}
-
-/**
- * @brief Retrieve a list of all keys in the dictionary
- * 
- * @param table Pointer to the dictionary for which to retrieve the keys
- * @return char** List of all keys in the dictionary, terminated by a NULL pointer
- */
-char **keys_dict(Dict *table)
-{
-    int size = table->size_dict(table);
-    char **keysArray = malloc(sizeof(char *) * (size + 1)); // extra space for NULL terminator
-    int index = 0;
-
-    for (int i = 0; i < TABLE_SIZE; i++)
-    {
-        KeyValue *pair = table->buckets_dict[i];
-        while (pair)
-        {
-            keysArray[index++] = strdup(pair->key);
-            pair = pair->next;
-        }
-    }
-
-    keysArray[index] = NULL; // NULL terminator
-    return keysArray;
-}
-
-/**
- * @brief Retrieve a list of all values in the dictionary
- * 
- * @param table Pointer to the dictionary for which to retrieve the values
- * @return char** List of all values in the dictionary, terminated by a NULL pointer
- */
-char **values_dict(Dict *table)
-{
-    int size = table->size_dict(table);
-    char **valuesArray = malloc(sizeof(char *) * (size + 1)); // extra space for NULL terminator
-    int index = 0;
-    for (int i = 0; i < TABLE_SIZE; i++)
-    {
-        KeyValue *pair = table->buckets_dict[i];
-        while (pair)
-        {
-            valuesArray[index++] = strdup(pair->value);
-            pair = pair->next;
-        }
-    }
-    valuesArray[index] = NULL; // NULL terminator
-    return valuesArray;
-}
-
-/**
- * @brief Retrieve a list of all items (key-value pairs) in the dictionary
- * 
- * @param table Pointer to the dictionary for which to retrieve the items
- * @return DictItem* List of all items in the dictionary, terminated by a NULL pointer
- */
-DictItem *items_dict(Dict *table)
-{
-    int size = table->size_dict(table);
-    DictItem *itemsArray = malloc(sizeof(DictItem) * (size + 1)); // extra space for NULL terminator
-    int index = 0;
-    for (int i = 0; i < TABLE_SIZE; i++)
-    {
-        KeyValue *pair = table->buckets_dict[i];
-        while (pair)
-        {
-            itemsArray[index].key = strdup(pair->key);
-            itemsArray[index].value = strdup(pair->value);
-            index++;
-            pair = pair->next;
-        }
-    }
-    itemsArray[index].key = NULL;   // NULL terminator
-    itemsArray[index].value = NULL; // NULL terminator
-    return itemsArray;
-}
-
-/**
- * @brief Compute the load factor of the dictionary (number of items / table size)
- * 
- * @param table Pointer to the dictionary for which to compute the load factor
- * @return double Load factor of the dictionary
- */
-double loadFactor_dict(Dict *table)
-{
-    int size = table->size_dict(table);
-    return (double)size / TABLE_SIZE;
-}
-
-/**
- * @brief Remove a key-value pair from the dictionary and return its value, or return a default value if the key does not exist
- * 
- * @param self Pointer to the dictionary from which to remove the pair
- * @param key Key for the pair to remove
- * @param default_value Default value to return if the key does not exist
- * @return char* Value associated with the removed pair, or the default value if the key did not exist
- */
-char *pop_dict(Dict *self, const char *key, const char *default_value)
-{
-    char *value = get_dict(self, key);
-    if (value)
-    {
-        removeKey_dict(self, key);
-        return value;
-    }
-    else
-    {
-        return (char *)default_value;
-    }
-}
-
-/**
- * @brief Print all key-value pairs in the dictionary
- * 
- * @param self Pointer to the dictionary to print
- */
-void print_dict(struct Dict *self)
-{
-    for (int i = 0; i < TABLE_SIZE; i++)
-    {
-        KeyValue *pair = self->buckets_dict[i];
-        while (pair)
-        {
-            printf("%s: %s\n", pair->key, pair->value);
-            pair = pair->next;
-        }
-    }
-}
-
-/**
- * @brief Check if the dictionary is empty
- * 
- * @param self Pointer to the dictionary to check
- * @return bool Boolean indicating whether the dictionary is empty (true) or not (false)
- */
-bool isEmpty_dict(Dict* self)
-{
-    return self->size_dict(self) == 0 ? 1 : 0;
-}
-
-/**
- * @brief Remove a key-value pair from the dictionary and return it as a DictItem, or return NULL if the key does not exist
- * 
- * @param self Pointer to the dictionary from which to remove the pair
- * @param key Key for the pair to remove
- * @return DictItem* Pointer to the removed pair as a DictItem, or NULL if the key does not exist
- */
-DictItem *popItem_dict(Dict *self, const char *key)
-{
-    unsigned int idx = self->hash_dict(key);
-    KeyValue **pair = &(self->buckets_dict[idx]);
-
-    while (*pair && strcmp(key, (*pair)->key) != 0)
-        pair = &((*pair)->next);
-
-    if (*pair)
-    {
-        KeyValue *temp = *pair;
-        DictItem *item = malloc(sizeof(*item));
-        item->key = strdup(temp->key);
-        item->value = strdup(temp->value);
-        *pair = (*pair)->next;
-        free(temp->key);
-        free(temp->value);
-        free(temp);
-        self->size_field_dict--;
-        return item;
     }
     return NULL;
 }
 
-/**
- * @brief Merge two dictionaries, adding key-value pairs from the other dictionary to this one if the key does not exist
- * 
- * @param self Pointer to the dictionary into which to merge the other dictionary
- * @param other Pointer to the dictionary to merge into this one
- */
-void merge_dict(Dict *self, Dict *other)
+static void linkBucket(Dict *self, KeyValue *entry)
 {
-    char **otherKeys = other->keys_dict(other);
-    int i = 0;
+    size_t index = bucketOf(self, entry->key);
+    entry->next = self->buckets_dict[index];
+    self->buckets_dict[index] = entry;
+}
 
-    while(otherKeys[i]) 
+static void grow(Dict *self)
+{
+    size_t capacity = self->capacity_dict * 2;
+    KeyValue **buckets = calloc(capacity, sizeof *buckets);
+    if (!buckets)
     {
-        if(!self->exists_dict(self, otherKeys[i])) 
+        return;
+    }
+    free(self->buckets_dict);
+    self->buckets_dict = buckets;
+    self->capacity_dict = capacity;
+    for (KeyValue *entry = self->first_dict; entry; entry = entry->nextInOrder)
+    {
+        linkBucket(self, entry);
+    }
+}
+
+static void unlinkEntry(Dict *self, KeyValue *entry)
+{
+    KeyValue **link = &self->buckets_dict[bucketOf(self, entry->key)];
+    while (*link != entry)
+    {
+        link = &(*link)->next;
+    }
+    *link = entry->next;
+
+    if (entry->previousInOrder)
+    {
+        entry->previousInOrder->nextInOrder = entry->nextInOrder;
+    }
+    else
+    {
+        self->first_dict = entry->nextInOrder;
+    }
+
+    if (entry->nextInOrder)
+    {
+        entry->nextInOrder->previousInOrder = entry->previousInOrder;
+    }
+    else
+    {
+        self->last_dict = entry->previousInOrder;
+    }
+
+    self->size_field_dict--;
+}
+
+static void freeEntry(KeyValue *entry)
+{
+    free(entry->key);
+    free(entry->value);
+    free(entry);
+}
+
+static void insert_dict(Dict *self, const char *key, const char *value)
+{
+    if (!self || !key || !value)
+    {
+        return;
+    }
+    char *valueCopy = duplicate(value);
+    if (!valueCopy)
+    {
+        return;
+    }
+
+    KeyValue *existing = findEntry(self, key);
+    if (existing)
+    {
+        free(existing->value);
+        existing->value = valueCopy;
+        return;
+    }
+
+    KeyValue *entry = calloc(1, sizeof *entry);
+    char *keyCopy = duplicate(key);
+    if (!entry || !keyCopy)
+    {
+        free(entry);
+        free(keyCopy);
+        free(valueCopy);
+        return;
+    }
+
+    if ((size_t)self->size_field_dict + 1 > self->capacity_dict / 4 * 3)
+    {
+        grow(self);
+    }
+
+    entry->key = keyCopy;
+    entry->value = valueCopy;
+    entry->previousInOrder = self->last_dict;
+    if (self->last_dict)
+    {
+        self->last_dict->nextInOrder = entry;
+    }
+    else
+    {
+        self->first_dict = entry;
+    }
+    self->last_dict = entry;
+    linkBucket(self, entry);
+    self->size_field_dict++;
+}
+
+static char *get_dict(Dict *self, const char *key)
+{
+    KeyValue *entry = findEntry(self, key);
+    return entry ? entry->value : NULL;
+}
+
+static void removeKey_dict(Dict *self, const char *key)
+{
+    KeyValue *entry = findEntry(self, key);
+    if (entry)
+    {
+        unlinkEntry(self, entry);
+        freeEntry(entry);
+    }
+}
+
+static int size_dict(Dict *self)
+{
+    return self ? self->size_field_dict : 0;
+}
+
+static int exists_dict(Dict *self, const char *key)
+{
+    return findEntry(self, key) != NULL;
+}
+
+static void update_dict(Dict *self, const char *key, const char *value)
+{
+    insert_dict(self, key, value);
+}
+
+static void clear_dict(Dict *self)
+{
+    if (!self)
+    {
+        return;
+    }
+    KeyValue *entry = self->first_dict;
+    while (entry)
+    {
+        KeyValue *next = entry->nextInOrder;
+        freeEntry(entry);
+        entry = next;
+    }
+    memset(self->buckets_dict, 0, self->capacity_dict * sizeof *self->buckets_dict);
+    self->first_dict = NULL;
+    self->last_dict = NULL;
+    self->size_field_dict = 0;
+}
+
+static char **collectStrings(Dict *self, bool keys)
+{
+    if (!self)
+    {
+        return NULL;
+    }
+    char **result = malloc(((size_t)self->size_field_dict + 1) * sizeof *result);
+    if (!result)
+    {
+        return NULL;
+    }
+    size_t count = 0;
+    for (KeyValue *entry = self->first_dict; entry; entry = entry->nextInOrder)
+    {
+        result[count] = duplicate(keys ? entry->key : entry->value);
+        if (!result[count])
         {
-            char *value = other->get_dict(other, otherKeys[i]);
-            self->insert_dict(self, otherKeys[i], value);
+            while (count > 0)
+            {
+                free(result[--count]);
+            }
+            free(result);
+            return NULL;
         }
-
-        i++;
+        count++;
     }
+    result[count] = NULL;
+    return result;
 }
 
-/**
- * @brief Copy all key-value pairs from a source dictionary to this one, overwriting any existing pairs
- * 
- * @param self Pointer to the dictionary into which to copy the pairs
- * @param source Pointer to the dictionary from which to copy the pairs
- */
-void copy_dict(Dict *self, Dict *source)
+static char **keys_dict(Dict *self)
 {
-    // Clear the current dictionary first
-    self->clear_dict(self);
+    return collectStrings(self, true);
+}
 
-    for (int i = 0; i < TABLE_SIZE; i++)
+static char **values_dict(Dict *self)
+{
+    return collectStrings(self, false);
+}
+
+static DictItem *items_dict(Dict *self)
+{
+    if (!self)
     {
-        KeyValue *pair = source->buckets_dict[i];
-        while (pair)
+        return NULL;
+    }
+    DictItem *items = calloc((size_t)self->size_field_dict + 1, sizeof *items);
+    if (!items)
+    {
+        return NULL;
+    }
+    size_t count = 0;
+    for (KeyValue *entry = self->first_dict; entry; entry = entry->nextInOrder, count++)
+    {
+        items[count].key = duplicate(entry->key);
+        items[count].value = duplicate(entry->value);
+        if (!items[count].key || !items[count].value)
         {
-            self->insert_dict(self, pair->key, pair->value);
-            pair = pair->next;
+            for (size_t i = 0; i <= count; i++)
+            {
+                free(items[i].key);
+                free(items[i].value);
+            }
+            free(items);
+            return NULL;
+        }
+    }
+    return items;
+}
+
+static double loadFactor_dict(Dict *self)
+{
+    return self ? (double)self->size_field_dict / (double)self->capacity_dict : 0.0;
+}
+
+static char *pop_dict(Dict *self, const char *key, const char *defaultVal)
+{
+    KeyValue *entry = findEntry(self, key);
+    if (!entry)
+    {
+        return defaultVal ? duplicate(defaultVal) : NULL;
+    }
+    unlinkEntry(self, entry);
+    char *value = entry->value;
+    free(entry->key);
+    free(entry);
+    return value;
+}
+
+static void print_dict(Dict *self)
+{
+    for (KeyValue *entry = self ? self->first_dict : NULL; entry; entry = entry->nextInOrder)
+    {
+        printf("%s: %s\n", entry->key, entry->value);
+    }
+}
+
+static bool isEmpty_dict(Dict *self)
+{
+    return size_dict(self) == 0;
+}
+
+static DictItem *popItem_dict(Dict *self, const char *key)
+{
+    KeyValue *entry = key ? findEntry(self, key) : (self ? self->last_dict : NULL);
+    if (!entry)
+    {
+        return NULL;
+    }
+    DictItem *item = malloc(sizeof *item);
+    if (!item)
+    {
+        return NULL;
+    }
+    unlinkEntry(self, entry);
+    item->key = entry->key;
+    item->value = entry->value;
+    free(entry);
+    return item;
+}
+
+static void merge_dict(Dict *self, Dict *other)
+{
+    if (!self || !other || self == other)
+    {
+        return;
+    }
+    for (KeyValue *entry = other->first_dict; entry; entry = entry->nextInOrder)
+    {
+        if (!findEntry(self, entry->key))
+        {
+            insert_dict(self, entry->key, entry->value);
         }
     }
 }
 
-/**
- * @brief Insert a set of keys into the dictionary with the same value for each
- * 
- * @param self Pointer to the dictionary into which to insert the keys
- * @param keys Pointer to an array of keys to insert
- * @param value Value to associate with each key
- * @param numKeys Number of keys in the array
- */
-void fromKeys_dict(Dict *self, const char **keys, const char *value, int numKeys)
+static void copy_dict(Dict *self, Dict *source)
 {
-    for (int i = 0; i < numKeys; i++)
+    if (!self || !source || self == source)
     {
-        self->insert_dict(self, keys[i], value);
+        return;
+    }
+    clear_dict(self);
+    for (KeyValue *entry = source->first_dict; entry; entry = entry->nextInOrder)
+    {
+        insert_dict(self, entry->key, entry->value);
     }
 }
 
-/**
- * @brief Create a new dictionary and initialize its functions
- * 
- * @return Dict* Pointer to the newly created dictionary
- */
-Dict* createDict()
+static void fromKeys_dict(Dict *self, const char **keys, const char *value, int numKeys)
 {
-    Dict *table = malloc(sizeof(Dict));
-    memset(table, 0, sizeof(Dict));
+    for (int i = 0; keys && i < numKeys; i++)
+    {
+        insert_dict(self, keys[i], value);
+    }
+}
 
-    table->hash_dict = hash_dict;
-    table->insert_dict = insert_dict;
-    table->get_dict = get_dict;
-    table->removeKey_dict = removeKey_dict;
-    table->size_dict = size_dict;
-    table->exists_dict = exists_dict;
-    table->update_dict = update_dict;
-    table->clear_dict = clear_dict;
-    table->keys_dict = keys_dict;
-    table->values_dict = values_dict;
-    table->items_dict = items_dict;
-    table->loadFactor_dict = loadFactor_dict;
-    table->pop_dict = pop_dict;
-    table->size_field_dict = 0;
-    table->print_dict = print_dict;
-    table->isEmpty_dict = isEmpty_dict;
-    table->popItem_dict = popItem_dict;
-    table->merge_dict = merge_dict;
-    table->copy_dict = copy_dict;
-    table->fromKeys_dict = fromKeys_dict;
+void destroyDict(Dict *dict)
+{
+    if (!dict)
+    {
+        return;
+    }
+    clear_dict(dict);
+    free(dict->buckets_dict);
+    free(dict);
+}
 
-    return table;
+Dict *createDict(void)
+{
+    Dict *dict = calloc(1, sizeof *dict);
+    if (!dict)
+    {
+        return NULL;
+    }
+    dict->buckets_dict = calloc(INITIAL_CAPACITY, sizeof *dict->buckets_dict);
+    if (!dict->buckets_dict)
+    {
+        free(dict);
+        return NULL;
+    }
+    dict->capacity_dict = INITIAL_CAPACITY;
+
+    dict->hash_dict = hash_dict;
+    dict->insert_dict = insert_dict;
+    dict->get_dict = get_dict;
+    dict->removeKey_dict = removeKey_dict;
+    dict->size_dict = size_dict;
+    dict->exists_dict = exists_dict;
+    dict->update_dict = update_dict;
+    dict->clear_dict = clear_dict;
+    dict->keys_dict = keys_dict;
+    dict->values_dict = values_dict;
+    dict->items_dict = items_dict;
+    dict->loadFactor_dict = loadFactor_dict;
+    dict->pop_dict = pop_dict;
+    dict->print_dict = print_dict;
+    dict->isEmpty_dict = isEmpty_dict;
+    dict->popItem_dict = popItem_dict;
+    dict->merge_dict = merge_dict;
+    dict->copy_dict = copy_dict;
+    dict->fromKeys_dict = fromKeys_dict;
+    dict->destroy_dict = destroyDict;
+    return dict;
 }
